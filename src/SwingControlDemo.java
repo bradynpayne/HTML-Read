@@ -94,6 +94,7 @@ public class SwingControlDemo implements ActionListener {
                     URL url = new URL("\n" + urlBox.getText());
                     BufferedReader reader = new BufferedReader(
                             new InputStreamReader(url.openStream()));
+                    String lowerKEY = key.getText().toLowerCase();
                     String line;
                     while ((line = reader.readLine()) != null) {
                         if (line.contains("http") && line.contains("href")) {
@@ -103,8 +104,9 @@ public class SwingControlDemo implements ActionListener {
                                 y = x;
                             }
                             String Line = (line.substring(x, y));
+                            line.toLowerCase();
 
-                            if (Line.contains(key.getText())) {
+                            if (Line.contains(lowerKEY)) {
                                 output.append(Line);
                                 output.append("\n");
                             }
