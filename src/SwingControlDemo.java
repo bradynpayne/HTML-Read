@@ -26,6 +26,9 @@ public class SwingControlDemo implements ActionListener {
     public JTextArea output;
     private JScrollPane scroll;
 
+    public int maxdepth = 2;
+    public int depth = 0;
+
 
     private JTextArea bottomCenterText;
     private int WIDTH = 800;
@@ -83,41 +86,60 @@ public class SwingControlDemo implements ActionListener {
         background.setVisible(true);
     }
 
+    public void readHTML(String thing, String pat) {
+        String path = pat + " --> " + thing;
+        depth = depth + 1;
+        if(thing == key.getText()) {
+            System.out.println("WE DID IT");
+            System.out.println(path);
+        }
+        else{
+            try {
+                System.out.println("It's working");
+                //ArrayList<String> str = new ArrayList<String>();
+                System.out.println();
+                URL url = new URL("\n" + thing);
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(url.openStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("https://en.wikipedia.org/wiki") && line.contains("href")) {
+                        int x = line.indexOf("http");
+                        int y = line.indexOf("\"", x);
+                        if (y < 0) {
+                            y = x;
+                        }
+                        String Line = (line.substring(x, y));
+                        System.out.println(Line);
+
+
+                        //if (Line.contains(lowerKEY)) {
+//                            output.append(Line);
+//                            output.append("\n");
+                        //}
+                       // else {
+                            readHTML(Line, path);
+                       // }
+
+
+
+                    }
+
+                }
+
+                reader.close();
+            } catch(Exception ex){
+                System.out.println(ex);
+            }
+        }
+    }
+
     private class ButtonClickListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();
 
             if (command.equals("Search")) {
-                try {
-                    ArrayList<String> str = new ArrayList<String>();
-                    System.out.println();
-                    URL url = new URL("\n" + urlBox.getText());
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(url.openStream()));
-                    String lowerKEY = key.getText().toLowerCase();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        if (line.contains("http") && line.contains("href")) {
-                            int x = line.indexOf("http");
-                            int y = line.indexOf("\"", x);
-                            if (y < 0) {
-                                y = x;
-                            }
-                            String Line = (line.substring(x, y));
-                            line.toLowerCase();
-
-                            if (Line.contains(lowerKEY)) {
-                                output.append(Line);
-                                output.append("\n");
-                            }
-                        }
-
-                    }
-
-                    reader.close();
-                } catch (Exception ex) {
-                    System.out.println(ex);
-                }
+                readHTML(urlBox.getText(), "");
             }
         }
     }
