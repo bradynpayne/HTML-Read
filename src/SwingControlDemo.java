@@ -86,51 +86,54 @@ public class SwingControlDemo implements ActionListener {
         background.setVisible(true);
     }
 
-    public void readHTML(String thing, String pat) {
+    public void readHTML(String thing, String pat, int depth) {
+        if(depth < 3) {
         String path = pat + " --> " + thing;
-        depth = depth + 1;
-        if(thing == key.getText()) {
-            System.out.println("WE DID IT");
-            System.out.println(path);
-        }
-        else{
-            try {
-                System.out.println("It's working");
-                //ArrayList<String> str = new ArrayList<String>();
-                System.out.println();
-                URL url = new URL("\n" + thing);
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(url.openStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.contains("https://en.wikipedia.org/wiki") && line.contains("href")) {
-                        int x = line.indexOf("http");
-                        int y = line.indexOf("\"", x);
-                        if (y < 0) {
-                            y = x;
-                        }
-                        String Line = (line.substring(x, y));
-                        System.out.println(Line);
+            if (thing == key.getText()) {
+                System.out.println("WE DID IT");
+                System.out.println(path);
+                output.append(path);
+            }
+ //           else {
+                try {
+                    System.out.println("It's working");
+                    //ArrayList<String> str = new ArrayList<String>();
+                    System.out.println();
+                    URL url = new URL( thing);
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(url.openStream()));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        if (line.contains("href") && !line.contains("http") && !line.contains("href=\"mw") && !line.contains("e.en") && !line.contains("wikimedia") && !line.contains("href=\"#cite_") && !line.contains("/en.") && !line.contains("wiki/File") && !line.contains("w/index.") && !line.contains("wiki/Wikipedia")) {
+                            int x = line.indexOf("href=\"") + 6;
+                            int y = line.indexOf("\"", x);
+                            if (y < 0) {
+                                y = x;
+                            }
+                          String Line = ( "https://en.wikipedia.org/" + line.substring(x, y));
+                            //String Line = (line.substring(x, y));
+                            System.out.println(depth + " " + Line);
 
 
-                        //if (Line.contains(lowerKEY)) {
+                            //if (Line.contains(lowerKEY)) {
 //                            output.append(Line);
 //                            output.append("\n");
-                        //}
-                       // else {
-                            readHTML(Line, path);
-                       // }
+                            //}
+                            // else {
+
+                            readHTML(Line, path, depth + 1);
+                            // }
 
 
+                        }
 
                     }
 
+                    reader.close();
+                } catch (Exception ex) {
+                    System.out.println(ex);
                 }
-
-                reader.close();
-            } catch(Exception ex){
-                System.out.println(ex);
-            }
+ //           }
         }
     }
 
@@ -139,7 +142,7 @@ public class SwingControlDemo implements ActionListener {
             String command = e.getActionCommand();
 
             if (command.equals("Search")) {
-                readHTML(urlBox.getText(), "");
+                readHTML(urlBox.getText(), "",0);
             }
         }
     }
