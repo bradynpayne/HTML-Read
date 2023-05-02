@@ -86,19 +86,13 @@ public class SwingControlDemo implements ActionListener {
 
     public void readHTML(String thing, String pat, int depth) {
         String path = pat + thing + " --> ";
-//        if (thing.contains(key.getText())) {
-//            System.out.println("DONE");
-//            System.out.println(path);
-//            output.append(path);
-//        }
+
 
         if(depth < 2) {
 
- //           else {
 
                 try {
                     System.out.println("It's working");
-                    //ArrayList<String> str = new ArrayList<String>();
                     System.out.println();
                     URL url = new URL( thing);
                     BufferedReader reader = new BufferedReader(
@@ -112,15 +106,10 @@ public class SwingControlDemo implements ActionListener {
                                 y = x;
                             }
                           String Line = ( "https://en.wikipedia.org" + line.substring(x, y));
-                            //String Line = (line.substring(x, y));
                             System.out.println(depth + " " + Line);
 
 
-                            //if (Line.contains(lowerKEY)) {
-//                            output.append(Line);
-//                            output.append("\n");
-                            //}
-                            // else {
+
                             if (Line.contains(key.getText())) {
                             System.out.println("DONE");
                              path = path + Line;
