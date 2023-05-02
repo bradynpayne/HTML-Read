@@ -26,13 +26,11 @@ public class SwingControlDemo implements ActionListener {
     public JTextArea output;
     private JScrollPane scroll;
 
-    public int maxdepth = 2;
-    public int depth = 0;
-
-
     private JTextArea bottomCenterText;
     private int WIDTH = 800;
     private int HEIGHT = 700;
+
+    boolean run = true;
 
 
     public SwingControlDemo() {
@@ -87,14 +85,17 @@ public class SwingControlDemo implements ActionListener {
     }
 
     public void readHTML(String thing, String pat, int depth) {
-        if(depth < 3) {
-        String path = pat + " --> " + thing;
-            if (thing == key.getText()) {
-                System.out.println("WE DID IT");
-                System.out.println(path);
-                output.append(path);
-            }
+        String path = pat + thing + " --> ";
+//        if (thing.contains(key.getText())) {
+//            System.out.println("DONE");
+//            System.out.println(path);
+//            output.append(path);
+//        }
+
+        if(depth < 2) {
+
  //           else {
+
                 try {
                     System.out.println("It's working");
                     //ArrayList<String> str = new ArrayList<String>();
@@ -104,13 +105,13 @@ public class SwingControlDemo implements ActionListener {
                             new InputStreamReader(url.openStream()));
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        if (line.contains("href") && !line.contains("http") && !line.contains("href=\"mw") && !line.contains("e.en") && !line.contains("wikimedia") && !line.contains("href=\"#cite_") && !line.contains("/en.") && !line.contains("wiki/File") && !line.contains("w/index.") && !line.contains("wiki/Wikipedia")) {
+                        if (line.contains("href") && !line.contains("http") && !line.contains("href=\"mw") && !line.contains("e.en") && !line.contains("wikimedia") && !line.contains("href=\"#cite_") && !line.contains("/en.") && !line.contains("wiki/File") && !line.contains("w/index.") && !line.contains("wiki/Wikipedia") && !line.contains("#") && !line.contains("Help")) {
                             int x = line.indexOf("href=\"") + 6;
                             int y = line.indexOf("\"", x);
                             if (y < 0) {
                                 y = x;
                             }
-                          String Line = ( "https://en.wikipedia.org/" + line.substring(x, y));
+                          String Line = ( "https://en.wikipedia.org" + line.substring(x, y));
                             //String Line = (line.substring(x, y));
                             System.out.println(depth + " " + Line);
 
@@ -120,8 +121,17 @@ public class SwingControlDemo implements ActionListener {
 //                            output.append("\n");
                             //}
                             // else {
-
-                            readHTML(Line, path, depth + 1);
+                            if (Line.contains(key.getText())) {
+                            System.out.println("DONE");
+                             path = path + Line;
+                             System.out.println(path);
+                            output.append(path);
+                            output.append("\n");
+                            run = false;
+                           }
+                            if(run == true) {
+                                readHTML(Line, path, depth + 1);
+                            }
                             // }
 
 
@@ -142,6 +152,7 @@ public class SwingControlDemo implements ActionListener {
             String command = e.getActionCommand();
 
             if (command.equals("Search")) {
+                run = true;
                 readHTML(urlBox.getText(), "",0);
             }
         }
